@@ -22,6 +22,12 @@ case "$TERM" in
         ;;
 esac
 
+# parse current dir git branch 
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+
 if [ "$color_prompt" = yes ]; then
     if [[ ${EUID} == 0 ]] ; then
         PS1='${debian_chroot:+($debian_chroot)}\[\033[31m\]\h\[\033[34m\] \W \$\[\033[00m\] '
@@ -29,7 +35,7 @@ if [ "$color_prompt" = yes ]; then
         PS1='${debian_chroot:+($debian_chroot)}\[\033[32m\]\u@\h\[\033[34m\] \w \$\[\033[00m\] '
     fi
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+	PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w\[\033[32m\]\$(parse_git_branch)\[\033[00m\]\$ "
 fi
 
 unset color_prompt
